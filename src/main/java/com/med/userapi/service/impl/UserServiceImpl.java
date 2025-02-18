@@ -4,11 +4,13 @@ import com.github.javafaker.Faker;
 import com.med.userapi.entity.User;
 import com.med.userapi.enums.Role;
 import com.med.userapi.service.UserService;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     @Override
