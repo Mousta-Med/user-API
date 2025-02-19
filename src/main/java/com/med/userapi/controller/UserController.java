@@ -1,7 +1,11 @@
 package com.med.userapi.controller;
 
 import com.med.userapi.entity.User;
+import com.med.userapi.entity.dto.AuthenticationReq;
+import com.med.userapi.entity.dto.AuthenticationRes;
+import com.med.userapi.service.AuthenticationService;
 import com.med.userapi.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,13 +18,16 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
-    @GetMapping("/generate")
+    @Autowired
+    private AuthenticationService authenticationService;
+
+    @GetMapping("/users/generate")
     public ResponseEntity<List<User>> getUsers(@RequestParam int count) {
         List<User> users = userService.generateUsers(count);
         HttpHeaders headers = new HttpHeaders();
@@ -29,9 +36,14 @@ public class UserController {
         return new ResponseEntity<>(users, headers, HttpStatus.OK);
     }
 
-    @PostMapping("/batch")
+    @PostMapping("/users/batch")
     public ResponseEntity<?> batchUpload(@RequestParam("file") MultipartFile file) throws IOException {
         String response = userService.batchUsers(file.getBytes());
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/auth")
+    public ResponseEntity<AuthenticationRes> login(@RequestBody @Valid AuthenticationReq authenticationReq) {
+        return ResponseEntity.ok(authenticationService.login(authenticationReq));
     }
 }
