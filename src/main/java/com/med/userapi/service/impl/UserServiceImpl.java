@@ -1,17 +1,34 @@
 package com.med.userapi.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.javafaker.Faker;
 import com.med.userapi.entity.User;
 import com.med.userapi.enums.Role;
+import com.med.userapi.repository.UserRepository;
 import com.med.userapi.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public List<User> generateUsers(int count) {
@@ -35,5 +52,27 @@ public class UserServiceImpl implements UserService {
             users.add(user);
         }
         return users;
+    }
+
+    @Override
+    public String batchUsers(byte[] fileBytes) throws IOException {
+        ObjectMapper objectMapper = JsonMapper.builder()
+                .addModule(new JavaTimeModule())
+                .build();
+        List<User> users = objectMapper.readValue(fileBytes, new TypeReference<>() {});
+        int total = users.size();
+        int imported = 0;
+        int failed = 0;
+        for (User user : users) {
+            if (userRepository.existsByEmailOrUsername(user.getEmail(), user.getUsername())) {
+                failed++;
+            } else {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+                userRepository.save(user);
+                imported++;
+            }
+        }
+        return "{ \"total\": " + total + ", \"imported\": " + imported + ", \"failed\": " + failed + " }";
+
     }
 }

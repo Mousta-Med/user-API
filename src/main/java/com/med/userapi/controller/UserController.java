@@ -10,13 +10,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -33,5 +30,11 @@ public class UserController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setContentDispositionFormData("attachment", "users.json");
         return new ResponseEntity<>(users, headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/batch")
+    public ResponseEntity<?> batchUpload(@RequestParam("file") MultipartFile file) throws IOException {
+        String response = userService.batchUsers(file.getBytes());
+        return ResponseEntity.ok(response);
     }
 }
