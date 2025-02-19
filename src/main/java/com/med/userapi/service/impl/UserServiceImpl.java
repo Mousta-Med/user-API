@@ -9,8 +9,6 @@ import com.med.userapi.entity.User;
 import com.med.userapi.enums.Role;
 import com.med.userapi.repository.UserRepository;
 import com.med.userapi.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +57,8 @@ public class UserServiceImpl implements UserService {
         ObjectMapper objectMapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())
                 .build();
-        List<User> users = objectMapper.readValue(fileBytes, new TypeReference<>() {});
+        List<User> users = objectMapper.readValue(fileBytes, new TypeReference<>() {
+        });
         int total = users.size();
         int imported = 0;
         int failed = 0;

@@ -1,8 +1,5 @@
 package com.med.userapi.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.med.userapi.entity.User;
 import com.med.userapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

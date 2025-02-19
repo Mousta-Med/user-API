@@ -8,5 +8,6 @@ import java.util.List;
 public interface UserService {
 
     List<User> generateUsers(int count);
+
     String batchUsers(byte[] fileBytes) throws IOException;
 }
