@@ -7,8 +7,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.javafaker.Faker;
 import com.med.userapi.entity.User;
 import com.med.userapi.enums.Role;
+import com.med.userapi.jwt.JWTUtil;
 import com.med.userapi.repository.UserRepository;
 import com.med.userapi.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +24,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTUtil jwtUtil;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JWTUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -73,5 +77,14 @@ public class UserServiceImpl implements UserService {
         }
         return "{ \"total\": " + total + ", \"imported\": " + imported + ", \"failed\": " + failed + " }";
 
+    }
+
+    @Override
+    public User getYourProfile(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        String token = authHeader.substring(7);
+        String email = jwtUtil.extractUsername(token);
+        return userRepository.findByUsernameOrEmail(email, email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

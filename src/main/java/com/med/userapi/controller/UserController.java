@@ -5,6 +5,7 @@ import com.med.userapi.entity.dto.AuthenticationReq;
 import com.med.userapi.entity.dto.AuthenticationRes;
 import com.med.userapi.service.AuthenticationService;
 import com.med.userapi.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -45,5 +46,10 @@ public class UserController {
     @PostMapping("/auth")
     public ResponseEntity<AuthenticationRes> login(@RequestBody @Valid AuthenticationReq authenticationReq) {
         return ResponseEntity.ok(authenticationService.login(authenticationReq));
+    }
+
+    @GetMapping("/users/me")
+    public ResponseEntity<User> getYourProfile(HttpServletRequest request) {
+        return ResponseEntity.ok(userService.getYourProfile(request));
     }
 }

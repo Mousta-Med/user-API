@@ -5,6 +5,7 @@ import com.med.userapi.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,7 +15,6 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -46,9 +46,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         req -> req
                                 .requestMatchers(getOpenedResources()).permitAll()
-                                .requestMatchers("/api/auth/**").permitAll()
-                                .anyRequest().permitAll()
-                        )
+                                .requestMatchers("/api/auth", "/api/users/**").permitAll()
+                                .anyRequest().authenticated()
+                )
                 .userDetailsService(userDetailsService)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -57,13 +57,13 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .build();
     }
+
     private String[] getOpenedResources() {
         return new String[]{
                 "/h2-console/**",
                 "/swagger-ui/**",
                 "/swagger-resources",
                 "/swagger-resources/**",
-                "/v3/api-docs",
                 "/v3/api-docs/**"
         };
     }
