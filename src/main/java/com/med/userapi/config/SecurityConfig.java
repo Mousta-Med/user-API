@@ -46,7 +46,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         req -> req
                                 .requestMatchers(getOpenedResources()).permitAll()
-                                .requestMatchers("/api/auth", "/api/users/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsService)
@@ -61,6 +60,9 @@ public class SecurityConfig {
     private String[] getOpenedResources() {
         return new String[]{
                 "/h2-console/**",
+                "/api/users/generate",
+                "/api/users/batch",
+                "/api/auth",
                 "/swagger-ui/**",
                 "/swagger-resources",
                 "/swagger-resources/**",

@@ -13,4 +13,6 @@ public interface UserService {
     String batchUsers(byte[] fileBytes) throws IOException;
 
     User getYourProfile(HttpServletRequest request);
+
+    User getUserProfile(String username);
 }

@@ -12,6 +12,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +40,7 @@ public class UserController {
         return new ResponseEntity<>(users, headers, HttpStatus.OK);
     }
 
-    @PostMapping("/users/batch")
+    @PostMapping(value = "/users/batch", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> batchUpload(@RequestParam("file") MultipartFile file) throws IOException {
         String response = userService.batchUsers(file.getBytes());
         return ResponseEntity.ok(response);
@@ -52,4 +55,11 @@ public class UserController {
     public ResponseEntity<User> getYourProfile(HttpServletRequest request) {
         return ResponseEntity.ok(userService.getYourProfile(request));
     }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @GetMapping("/users/{username}")
+    public ResponseEntity<User> getUserProfile(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getUserProfile(username));
+    }
+
 }

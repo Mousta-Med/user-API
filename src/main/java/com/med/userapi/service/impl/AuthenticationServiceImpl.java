@@ -37,7 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Optional<User> user = userRepository.findByUsernameOrEmail(email, email);
 
         if (user.isPresent()) {
-            token = jwtUtil.generateToken(user.get().getEmail());
+            token = jwtUtil.generateToken(user.get().getUsername());
             return new AuthenticationRes(token);
         }
         throw new UsernameNotFoundException("User Not Found With This Credential: " + authenticationReq.getEmail());
