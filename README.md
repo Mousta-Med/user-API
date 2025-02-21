@@ -24,13 +24,13 @@ Ce projet est une API REST construite avec **Spring Boot** qui permet de :
 ## Installation et Configuration
 
 ### Prérequis
-- **Java 8+** installé
+- **Java Development Kit 23** installé
 - **Maven**
 
 ### Étapes d'installation
 1. **Cloner le projet**
 ```bash
-  git clone https://github.com/ton-repo/mini-projet-springboot.git
+  git clone https://github.com/Mousta-Med/user-API.git
 ```
 2. **Accéder au projet**
 ```bash
