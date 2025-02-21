@@ -43,7 +43,7 @@ mvn spring-boot:run
 ```
 4. **Accéder à l'API Swagger**
 ```
-http://localhost:9090/swagger-ui.html
+http://localhost:9090/swagger-ui
 ```
 
 ---
